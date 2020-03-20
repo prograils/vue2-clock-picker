@@ -236,12 +236,16 @@ export default {
       const endMin = parseInt(this.disabledTo.slice(3), 10);
       const valueHr = parseInt(value.slice(0, 2), 10);
       const valueMin = parseInt(value.slice(3), 10);
-      return (startHr === endHr && startHr === valueHr && startMin === 0 && endMin === 59) ||
-        (startHr === endHr && startHr === valueHr && valueMin >= startMin && valueMin <= endMin) ||
-        (startHr < endHr && valueHr === startHr && startMin <= valueMin) ||
-        (startHr < endHr && valueHr === endHr && endMin >= valueMin) ||
-        (startHr < endHr && valueHr > startHr && valueHr < endHr) ||
-        (startHr > endHr);
+
+      const minutesCondition =
+        (valueHr === startHr && valueMin >= startMin) ||
+        (valueHr === endHr && valueMin <= endMin);
+      // if disabled overnight like 19:00 - 06:00
+      if (startHr > endHr) {
+        return valueHr > startHr || valueHr < endHr || minutesCondition;
+      }
+      // regular case not passsing over midnight
+      return (valueHr > startHr && valueHr < endHr) || minutesCondition;
     },
 
 
