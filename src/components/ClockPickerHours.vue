@@ -90,13 +90,19 @@ export default {
      */
     makeArray(from, to) {
       const items = [];
-      for (let i = from; i <= to; i++) { // eslint-disable-line
-        const str = `00${(i > 23) ? 0 : i}`;
-        items.push(str.slice(str.length - 2));
+      let i = from;
+      while (i !== to) {
+        items.push(this.prepareDisabledHourItem(i));
+        i = (i + 1) % 24;
       }
+      items.push(this.prepareDisabledHourItem(i));
       return items;
     },
 
+    prepareDisabledHourItem(iterator) {
+      const str = `00${iterator}`;
+      return str.slice(str.length - 2);
+    },
 
     /**
      * check if item should be disabled or not
